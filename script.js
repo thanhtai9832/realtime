@@ -3,10 +3,21 @@ const params = new URLSearchParams(window.location.search);
 let initialTime = parseInt(params.get('time'), 10) || 0;  // Thời gian ban đầu
 let startTime = parseInt(params.get('start_time'), 10) || 0;  // Thời gian gốc (timestamp)
 
-// Tính thời gian thực tế còn lại
-let currentTimestamp = Math.floor(Date.now() / 1000);  // Lấy thời gian hiện tại (timestamp)
-let elapsedTime = currentTimestamp - startTime;  // Thời gian đã trôi qua
-let remainingTime = Math.max(initialTime - elapsedTime, 0);  // Thời gian còn lại (giây)
+// Lấy thời gian hiện tại
+let currentTimestamp = Math.floor(Date.now() / 1000);  // Unix timestamp (giây)
+
+// Kiểm tra các giá trị để đảm bảo tính toán chính xác
+console.log("Initial Time (giây):", initialTime);
+console.log("Start Time (timestamp):", startTime);
+console.log("Current Timestamp:", currentTimestamp);
+
+// Tính thời gian đã trôi qua và còn lại
+let elapsedTime = Math.max(currentTimestamp - startTime, 0);  // Đảm bảo không âm
+let remainingTime = Math.max(initialTime - elapsedTime, 0);  // Đảm bảo không âm
+
+// Log thêm thông tin về thời gian còn lại
+console.log("Elapsed Time (giây):", elapsedTime);
+console.log("Remaining Time (giây):", remainingTime);
 
 // Hàm định dạng thời gian (phút:giây:phần nhỏ của giây)
 function formatTime(milliseconds) {

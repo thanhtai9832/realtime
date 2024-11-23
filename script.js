@@ -1,32 +1,34 @@
-// Lấy tham số `time` và `startTime` từ URL
+// Lấy tham số `unpack_at` từ URL
 const params = new URLSearchParams(window.location.search);
-let time = parseInt(params.get('time'), 10) || 0; // Thời gian ban đầu (giây)
-let startTime = parseInt(params.get('startTime'), 10) || Date.now(); // Timestamp bắt đầu
+let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn từ URL (timestamp dạng giây)
 
-// Đổi giây thành mili giây
-let initialMilliseconds = time * 1000;
-
-// Tính thời gian đã trôi qua
-let elapsedMilliseconds = Date.now() - startTime;
-let milliseconds = Math.max(initialMilliseconds - elapsedMilliseconds, 0); // Thời gian còn lại (đảm bảo không âm)
-
-// Hàm định dạng thời gian
-function formatTime(milliseconds) {
-    const minutes = Math.floor(milliseconds / 60000);
-    const seconds = Math.floor((milliseconds % 60000) / 1000);
-    const fraction = Math.floor((milliseconds % 1000) / 100);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${fraction}`;
+// Kiểm tra nếu không có `unpack_at` trong URL
+if (!unpackAt) {
+    document.getElementById('countdown').textContent = 'Không có thông tin thời gian hết hạn!';
+    throw new Error('unpack_at is missing in the URL');
 }
 
-// Hiển thị và đếm ngược
-const countdownElement = document.getElementById('countdown');
+// Lấy thời gian hiện tại
+const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
+// Tính thời gian còn lại
+let remainingTime = unpackAt - currentTime; // Thời gian còn lại (giây)
+
+// Hàm định dạng thời gian
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60); // Số phút
+    const remainingSeconds = seconds % 60; // Số giây còn lại
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+// Hiển thị và cập nhật bộ đếm
+const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
-    if (milliseconds <= 0) {
+    if (remainingTime <= 0) {
         clearInterval(timer);
         countdownElement.textContent = 'Hết giờ!';
     } else {
-        countdownElement.textContent = `Đếm ngược: ${formatTime(milliseconds)}`;
-        milliseconds -= 100; // Giảm 100ms mỗi lần
+        countdownElement.textContent = `Còn lại: ${formatTime(remainingTime)}`;
+        remainingTime -= 1; // Giảm thời gian còn lại mỗi giây
     }
-}, 100);
+}, 1000); // Cập nhật mỗi giây

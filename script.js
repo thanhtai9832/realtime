@@ -34,9 +34,10 @@ const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
-        countdownElement.innerHTML = `Hết giờ!<br>Hết hạn: ${expiryTime}`;
+        countdownElement.innerHTML = `Hết giờ!<br><br><br>end_time: ${expiryTime}`;
     } else {
-        countdownElement.innerHTML = `Còn lại: ${formatCountdown(remainingTime)}<br>Hết hạn: ${expiryTime}`;
+        countdownElement.innerHTML = `${formatCountdown(remainingTime)}<br><br><br>end_time: ${expiryTime}`;
         remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
 }, 100); // Cập nhật mỗi 100ms
+

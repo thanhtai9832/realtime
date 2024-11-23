@@ -12,7 +12,7 @@ if (!unpackAt) {
 const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
 // Trừ độ trễ 2.3 giây
-const offset = 2.3; // Độ trễ (giây)
+const offset = 2; // Độ trễ (giây)
 
 // Tính thời gian còn lại, bù trừ 2.3 giây
 let remainingTime = Math.max(unpackAt - currentTime - offset, 0); // Đảm bảo không âm

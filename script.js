@@ -11,22 +11,22 @@ if (!unpackAt) {
 // Lấy thời gian hiện tại
 const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
-// Trừ độ trễ 2.3 giây
+// Trừ độ trễ 2.0 giây
 const offset = 2.0; // Độ trễ (giây)
 
-// Tính thời gian còn lại, bù trừ 2.3 giây
+// Tính thời gian còn lại, bù trừ 2.0 giây
 let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0); // Chuyển sang mili giây, đảm bảo không âm
 
 // Lấy thời gian hết hạn ở dạng cố định (giờ:phút:giây)
 const expiryTime = new Date(unpackAt * 1000).toLocaleTimeString('vi-VN', { hour12: false });
 
-// Hàm định dạng thời gian đếm ngược (phút:giây:mili giây)
+// Hàm định dạng thời gian đếm ngược (phút:giây:1/10 giây)
 function formatCountdown(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    const millis = Math.floor(milliseconds % 100);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${millis.toString().padStart(3, '0')}`;
+    const tenths = Math.floor((milliseconds % 1000) / 100); // Lấy phần 1/10 giây
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${tenths}`;
 }
 
 // Hiển thị và cập nhật bộ đếm
@@ -34,9 +34,9 @@ const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
-        countdownElement.textContent = `Hết giờ! | Hết hạn: ${expiryTime}`;
+        countdownElement.innerHTML = `Hết giờ!<br>Hết hạn: ${expiryTime}`;
     } else {
-        countdownElement.textContent = `Còn lại: ${formatCountdown(remainingTime)} | Hết hạn: ${expiryTime}`;
-        remainingTime -= 50; // Giảm thời gian còn lại mỗi 50ms
+        countdownElement.innerHTML = `Còn lại: ${formatCountdown(remainingTime)}<br>Hết hạn: ${expiryTime}`;
+        remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
-}, 50); // Cập nhật mỗi 50ms
+}, 100); // Cập nhật mỗi 100ms

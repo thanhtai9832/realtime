@@ -39,18 +39,19 @@ const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
         countdownElement.innerHTML = `
-            ID: ${tiktokId}<br><br>
-            Box: ${box}<br><br>
+            ${tiktokId}<br><br>
+            ${box}<br><br>
             ${formatCountdown(0)}<br><br>
-            end_time: ${expiryTime}
+            ${expiryTime}
         `;
     } else {
         countdownElement.innerHTML = `
-            ID: ${tiktokId}<br><br>
-            Box: ${box}<br><br>
+            ${tiktokId}<br><br>
+            ${box}<br><br>
             ${formatCountdown(remainingTime)}<br><br>
-            end_time: ${expiryTime}
+            ${expiryTime}
         `;
         remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
 }, 100); // Cập nhật mỗi 100ms
+

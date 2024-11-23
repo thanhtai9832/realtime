@@ -2,7 +2,7 @@
 const params = new URLSearchParams(window.location.search);
 let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn
 let box = params.get('box') || 'N/A'; // Lấy thông tin box (nếu không có, hiển thị "N/A")
-let tiktokId = params.get('tiktok_id') || 'N/A'; // Lấy thông tin tiktok_id (nếu không có, hiển thị "N/A")
+let tiktokId = params.get('id') || 'N/A'; // Sửa 'tiktok_id' thành 'id' để khớp với tham số trong URL
 
 // Kiểm tra nếu không có `unpack_at` trong URL
 if (!unpackAt) {

@@ -9,7 +9,7 @@ let milliseconds = time * 1000;
 function formatTime(milliseconds) {
     const minutes = Math.floor(milliseconds / 60000); // Tính số phút
     const seconds = Math.floor((milliseconds % 60000) / 1000); // Tính số giây còn lại
-    const fraction = Math.floor((milliseconds % 1000) / 10); // Tính phần nhỏ (1/100 giây)
+    const fraction = Math.floor((milliseconds % 1000) / 100); // Tính phần nhỏ (1/100 giây)
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${fraction.toString().padStart(2, '0')}`;
 }
 

@@ -15,13 +15,18 @@ const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (
 const offset = 2.3; // Độ trễ (giây)
 
 // Tính thời gian còn lại, bù trừ 2.3 giây
-let remainingTime = Math.max(unpackAt - currentTime - offset, 0); // Đảm bảo không âm
+let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0); // Chuyển sang mili giây, đảm bảo không âm
 
-// Hàm định dạng thời gian
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60); // Số phút
-    const remainingSeconds = seconds % 60; // Số giây còn lại
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+// Lấy thời gian hết hạn ở dạng cố định (giờ:phút:giây)
+const expiryTime = new Date(unpackAt * 1000).toLocaleTimeString('vi-VN', { hour12: false });
+
+// Hàm định dạng thời gian đếm ngược (phút:giây:mili giây)
+function formatCountdown(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const millis = Math.floor(milliseconds % 100);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${millis.toString().padStart(3, '0')}`;
 }
 
 // Hiển thị và cập nhật bộ đếm
@@ -29,9 +34,9 @@ const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
-        countdownElement.textContent = 'Hết giờ!';
+        countdownElement.textContent = `Hết giờ! | Hết hạn: ${expiryTime}`;
     } else {
-        countdownElement.textContent = `Còn lại: ${formatTime(remainingTime)}`;
-        remainingTime -= 1; // Giảm thời gian còn lại mỗi giây
+        countdownElement.textContent = `Còn lại: ${formatCountdown(remainingTime)} | Hết hạn: ${expiryTime}`;
+        remainingTime -= 50; // Giảm thời gian còn lại mỗi 50ms
     }
-}, 1000); // Cập nhật mỗi giây
+}, 50); // Cập nhật mỗi 50ms

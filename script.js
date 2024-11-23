@@ -5,12 +5,12 @@ let time = parseInt(params.get('time'), 10) || 0; // Chuyển `time` thành số
 // Đổi giây thành mili giây
 let milliseconds = time * 1000;
 
-// Hàm định dạng thời gian (phút:giây:phần nhỏ của giây)
+// Hàm định dạng thời gian (phút:giây:phần nhỏ của giây - 1 chữ số)
 function formatTime(milliseconds) {
     const minutes = Math.floor(milliseconds / 60000); // Tính số phút
     const seconds = Math.floor((milliseconds % 60000) / 1000); // Tính số giây còn lại
-    const fraction = Math.floor((milliseconds % 1000) / 100); // Tính phần nhỏ (1/100 giây)
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${fraction.toString().padStart(2, '0')}`;
+    const fraction = Math.floor((milliseconds % 1000) / 100); // Lấy phần nhỏ của giây (1 chữ số)
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${fraction}`;
 }
 
 // Hiển thị và đếm ngược
@@ -22,6 +22,6 @@ const timer = setInterval(() => {
         countdownElement.textContent = 'Hết giờ!';
     } else {
         countdownElement.textContent = `Đếm ngược: ${formatTime(milliseconds)}`;
-        milliseconds -= 10; // Giảm 10ms mỗi lần
+        milliseconds -= 100; // Giảm 100ms mỗi lần
     }
-}, 10); // Cập nhật mỗi 10ms
+}, 100); // Cập nhật mỗi 100ms

@@ -17,7 +17,20 @@ const offset = 2; // Độ trễ (giây)
 // Tính thời gian còn lại, bù trừ độ trễ
 let remainingTimeMs = Math.max((unpackAt - currentTime - offset) * 1000, 0); // Thời gian còn lại (mili giây)
 
-// Hàm định dạng thời gian
+// Tạo chuỗi hiển thị "time hết giờ"
+function formatFullTime(timestamp) {
+    const date = new Date(timestamp * 1000); // Chuyển đổi timestamp sang mili giây
+    const hours = date.getHours().toString().padStart(2, '0'); // Giờ
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Phút
+    const seconds = date.getSeconds().toString().padStart(2, '0'); // Giây
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+// Hiển thị thời gian hết giờ
+const expireTimeElement = document.getElementById('expire-time');
+expireTimeElement.textContent = `Hết giờ vào: ${formatFullTime(unpackAt)}`;
+
+// Hàm định dạng thời gian còn lại
 function formatTime(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000); // Tổng số giây
     const minutes = Math.floor(totalSeconds / 60); // Số phút

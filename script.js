@@ -6,12 +6,15 @@ const encodedData = params.get('data'); // Tham số chứa dữ liệu mã hóa
 let decodedData;
 if (encodedData) {
     try {
-        decodedData = atob(encodedData); // Giải mã Base64
-        console.log("Decoded Data:", decodedData);
+        // Giải mã Base64
+        decodedData = atob(encodedData); 
+        console.log("Decoded Data:", decodedData); // Kiểm tra dữ liệu sau giải mã
 
-        // Kiểm tra dữ liệu đã giải mã
+        // Kiểm tra nếu dữ liệu không chứa 'unpack_at'
         if (!decodedData.includes('unpack_at')) {
-            throw new Error('Dữ liệu đã giải mã không chứa tham số unpack_at');
+            console.error("Dữ liệu đã giải mã không chứa 'unpack_at':", decodedData);
+            document.getElementById('countdown').textContent = 'Dữ liệu đã giải mã không chứa thông tin thời gian hết hạn!';
+            throw new Error('Dữ liệu đã giải mã không chứa unpack_at');
         }
     } catch (error) {
         document.getElementById('countdown').textContent = `Lỗi khi giải mã dữ liệu: ${error.message}`;
@@ -23,10 +26,18 @@ if (encodedData) {
 }
 
 // Phân tích dữ liệu đã giải mã
-const dataParams = new URLSearchParams(decodedData);
+let dataParams;
+try {
+    dataParams = new URLSearchParams(decodedData);
+} catch (error) {
+    console.error("Dữ liệu giải mã không hợp lệ để phân tích:", decodedData);
+    document.getElementById('countdown').textContent = 'Dữ liệu đã giải mã không hợp lệ!';
+    throw new Error('Invalid decoded data format: ' + decodedData);
+}
 
 let unpackAt = parseInt(dataParams.get('unpack_at'), 10);
 if (isNaN(unpackAt)) {
+    console.error("Tham số 'unpack_at' không hợp lệ hoặc không tồn tại:", unpackAt);
     document.getElementById('countdown').textContent = 'Tham số unpack_at không hợp lệ!';
     throw new Error('Invalid unpack_at value');
 }
@@ -35,15 +46,18 @@ let diamondCount = dataParams.get('diamond_count') || 'N/A';
 let peopleCount = dataParams.get('people_count') || 'N/A';
 let box = `${diamondCount}/${peopleCount}`;
 
-console.log("unpack_at:", unpackAt, "diamond_count:", diamondCount, "people_count:", peopleCount);
+// Log chi tiết các tham số
+console.log("unpack_at:", unpackAt);
+console.log("diamond_count:", diamondCount);
+console.log("people_count:", peopleCount);
 
 // Tính toán thời gian
 const currentTime = Math.floor(Date.now() / 1000);
-const offset = 0.6;
+const offset = 0.6; // Bù độ trễ
 let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0);
 const expiryTime = new Date(unpackAt * 1000).toLocaleTimeString('vi-VN', { hour12: false });
 
-// Định dạng đếm ngược
+// Hàm định dạng thời gian đếm ngược
 function formatCountdown(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');

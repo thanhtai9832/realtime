@@ -7,8 +7,8 @@ let decodedData;
 if (encodedData) {
     try {
         // Giải mã Base64
-        decodedData = atob(encodedData); 
-        console.log("Decoded Data:", decodedData); // Kiểm tra dữ liệu sau giải mã
+        decodedData = atob(encodedData);
+        console.log("Decoded Data:", decodedData); // Log dữ liệu sau giải mã
 
         // Kiểm tra nếu dữ liệu không chứa 'unpack_at'
         if (!decodedData.includes('unpack_at')) {
@@ -29,25 +29,37 @@ if (encodedData) {
 let dataParams;
 try {
     dataParams = new URLSearchParams(decodedData);
+    console.log("Decoded Data as Params:", Array.from(dataParams.entries())); // Log tất cả tham số
 } catch (error) {
     console.error("Dữ liệu giải mã không hợp lệ để phân tích:", decodedData);
     document.getElementById('countdown').textContent = 'Dữ liệu đã giải mã không hợp lệ!';
     throw new Error('Invalid decoded data format: ' + decodedData);
 }
 
-let unpackAt = parseInt(dataParams.get('unpack_at'), 10);
-if (isNaN(unpackAt)) {
-    console.error("Tham số 'unpack_at' không hợp lệ hoặc không tồn tại:", unpackAt);
-    document.getElementById('countdown').textContent = 'Tham số unpack_at không hợp lệ!';
-    throw new Error('Invalid unpack_at value');
+// Kiểm tra và log tham số unpack_at
+let unpackAt = dataParams.get('unpack_at');
+console.log("Tham số unpack_at (chuỗi):", unpackAt);
+
+if (!unpackAt) {
+    document.getElementById('countdown').textContent = 'Tham số unpack_at không tồn tại!';
+    throw new Error('Missing unpack_at parameter');
 }
 
+unpackAt = parseInt(unpackAt, 10);
+if (isNaN(unpackAt)) {
+    console.error("Tham số 'unpack_at' không hợp lệ hoặc không phải số:", unpackAt);
+    document.getElementById('countdown').textContent = 'Tham số unpack_at không hợp lệ!';
+    throw new Error('Invalid unpack_at value: ' + unpackAt);
+}
+
+console.log("unpack_at (số nguyên):", unpackAt);
+
+// Lấy các tham số khác
 let diamondCount = dataParams.get('diamond_count') || 'N/A';
 let peopleCount = dataParams.get('people_count') || 'N/A';
 let box = `${diamondCount}/${peopleCount}`;
 
-// Log chi tiết các tham số
-console.log("unpack_at:", unpackAt);
+// Log các tham số
 console.log("diamond_count:", diamondCount);
 console.log("people_count:", peopleCount);
 

@@ -11,8 +11,11 @@ if (!unpackAt) {
 // Lấy thời gian hiện tại
 const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
-// Tính thời gian còn lại
-let remainingTime = unpackAt - currentTime; // Thời gian còn lại (giây)
+// Trừ độ trễ 2.3 giây
+const offset = 2.3; // Độ trễ (giây)
+
+// Tính thời gian còn lại, bù trừ 2.3 giây
+let remainingTime = Math.max(unpackAt - currentTime - offset, 0); // Đảm bảo không âm
 
 // Hàm định dạng thời gian
 function formatTime(seconds) {

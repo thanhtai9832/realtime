@@ -1,6 +1,8 @@
-// Lấy tham số `unpack_at` từ URL
+// Lấy tham số từ URL
 const params = new URLSearchParams(window.location.search);
-let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn từ URL (timestamp dạng giây)
+let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn
+let box = params.get('box') || 'N/A'; // Lấy thông tin box (nếu không có, hiển thị "N/A")
+let tiktokId = params.get('tiktok_id') || 'N/A'; // Lấy thông tin tiktok_id (nếu không có, hiển thị "N/A")
 
 // Kiểm tra nếu không có `unpack_at` trong URL
 if (!unpackAt) {
@@ -11,10 +13,10 @@ if (!unpackAt) {
 // Lấy thời gian hiện tại
 const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
-// Trừ độ trễ 2.0 giây
+// Trừ độ trễ 1.3 giây
 const offset = 1.3; // Độ trễ (giây)
 
-// Tính thời gian còn lại, bù trừ 2.0 giây
+// Tính thời gian còn lại, bù trừ độ trễ
 let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0); // Chuyển sang mili giây, đảm bảo không âm
 
 // Lấy thời gian hết hạn ở dạng cố định (giờ:phút:giây)
@@ -34,10 +36,19 @@ const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
-        countdownElement.innerHTML = `Hết giờ!<br><br><br>end_time: ${expiryTime}`;
+        countdownElement.innerHTML = `
+            ID: ${tiktokId}<br><br>
+            Box: ${box}<br><br>
+            ${formatCountdown(0)}<br><br>
+            end_time: ${expiryTime}
+        `;
     } else {
-        countdownElement.innerHTML = `${formatCountdown(remainingTime)}<br><br><br>end_time: ${expiryTime}`;
+        countdownElement.innerHTML = `
+            ID: ${tiktokId}<br><br>
+            Box: ${box}<br><br>
+            ${formatCountdown(remainingTime)}<br><br>
+            end_time: ${expiryTime}
+        `;
         remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
 }, 100); // Cập nhật mỗi 100ms
-

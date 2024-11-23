@@ -50,4 +50,4 @@ const timer = setInterval(() => {
         ;
         remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
-}, 100); // Cập nhật mỗi 100ms 
+}, 100); // Cập nhật mỗi 100ms

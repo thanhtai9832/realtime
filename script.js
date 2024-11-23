@@ -39,7 +39,7 @@ const timer = setInterval(() => {
         clearInterval(timer);
         countdownElement.innerHTML = `
             ${box}<br><br>
-            ${formatCountdown(0)}<br><br>
+            Hết giờ!<br><br>
             ${expiryTime}
         `;
     } else {
@@ -51,4 +51,3 @@ const timer = setInterval(() => {
         remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
 }, 100); // Cập nhật mỗi 100ms
-

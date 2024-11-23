@@ -1,81 +1,35 @@
-// Lấy tham số `data` đã mã hóa từ URL
+// Lấy tham số từ URL
 const params = new URLSearchParams(window.location.search);
-const encodedData = params.get('data'); // Tham số chứa dữ liệu mã hóa
+let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn
+let diamondCount = params.get('diamond_count') || 'N/A'; // Lấy diamond_count từ URL
+let peopleCount = params.get('people_count') || 'N/A'; // Lấy people_count từ URL
+let box = ${diamondCount}/${peopleCount}; // Ghép diamond_count và people_count
 
-// Giải mã Base64
-let decodedData;
-if (encodedData) {
-    try {
-        // Giải mã Base64
-        decodedData = atob(encodedData);
-        console.log("Decoded Data:", decodedData); // Log dữ liệu sau giải mã
-
-        // Kiểm tra nếu dữ liệu không chứa 'unpack_at'
-        if (!decodedData.includes('unpack_at')) {
-            console.error("Dữ liệu đã giải mã không chứa 'unpack_at':", decodedData);
-            document.getElementById('countdown').textContent = 'Dữ liệu đã giải mã không chứa thông tin thời gian hết hạn!';
-            throw new Error('Dữ liệu đã giải mã không chứa unpack_at');
-        }
-    } catch (error) {
-        document.getElementById('countdown').textContent = `Lỗi khi giải mã dữ liệu: ${error.message}`;
-        throw new Error('Failed to decode Base64: ' + error.message);
-    }
-} else {
-    document.getElementById('countdown').textContent = 'Không có dữ liệu mã hóa trong URL!';
-    throw new Error('Missing encoded data in the URL');
-}
-
-// Phân tích dữ liệu đã giải mã
-let dataParams;
-try {
-    dataParams = new URLSearchParams(decodedData);
-    console.log("Decoded Data as Params:", Array.from(dataParams.entries())); // Log tất cả tham số
-} catch (error) {
-    console.error("Dữ liệu giải mã không hợp lệ để phân tích:", decodedData);
-    document.getElementById('countdown').textContent = 'Dữ liệu đã giải mã không hợp lệ!';
-    throw new Error('Invalid decoded data format: ' + decodedData);
-}
-
-// Kiểm tra và log tham số unpack_at
-let unpackAt = dataParams.get('unpack_at');
-console.log("Tham số unpack_at (chuỗi):", unpackAt);
-
+// Kiểm tra nếu không có unpack_at trong URL
 if (!unpackAt) {
-    document.getElementById('countdown').textContent = 'Tham số unpack_at không tồn tại!';
-    throw new Error('Missing unpack_at parameter');
+    document.getElementById('countdown').textContent = 'Không có thông tin thời gian hết hạn!';
+    throw new Error('unpack_at is missing in the URL');
 }
 
-unpackAt = parseInt(unpackAt, 10);
-if (isNaN(unpackAt)) {
-    console.error("Tham số 'unpack_at' không hợp lệ hoặc không phải số:", unpackAt);
-    document.getElementById('countdown').textContent = 'Tham số unpack_at không hợp lệ!';
-    throw new Error('Invalid unpack_at value: ' + unpackAt);
-}
+// Lấy thời gian hiện tại
+const currentTime = Math.floor(Date.now() / 1000); // Thời gian hiện tại (timestamp dạng giây)
 
-console.log("unpack_at (số nguyên):", unpackAt);
+// Trừ độ trễ 1.3 giây
+const offset = 0.6; // Độ trễ (giây)
 
-// Lấy các tham số khác
-let diamondCount = dataParams.get('diamond_count') || 'N/A';
-let peopleCount = dataParams.get('people_count') || 'N/A';
-let box = `${diamondCount}/${peopleCount}`;
+// Tính thời gian còn lại, bù trừ độ trễ
+let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0); // Chuyển sang mili giây, đảm bảo không âm
 
-// Log các tham số
-console.log("diamond_count:", diamondCount);
-console.log("people_count:", peopleCount);
-
-// Tính toán thời gian
-const currentTime = Math.floor(Date.now() / 1000);
-const offset = 0.6; // Bù độ trễ
-let remainingTime = Math.max((unpackAt - currentTime - offset) * 1000, 0);
+// Lấy thời gian hết hạn ở dạng cố định (giờ:phút:giây)
 const expiryTime = new Date(unpackAt * 1000).toLocaleTimeString('vi-VN', { hour12: false });
 
-// Hàm định dạng thời gian đếm ngược
+// Hàm định dạng thời gian đếm ngược (phút:giây:1/10 giây)
 function formatCountdown(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
-    const tenths = String(Math.floor((milliseconds % 1000) / 100));
-    return `${minutes}:${seconds}:${tenths}`;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const tenths = Math.floor((milliseconds % 1000) / 100); // Lấy phần 1/10 giây
+    return ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${tenths};
 }
 
 // Hiển thị và cập nhật bộ đếm
@@ -83,17 +37,17 @@ const countdownElement = document.getElementById('countdown');
 const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
-        countdownElement.innerHTML = `
+        countdownElement.innerHTML = 
             ${box}<br><br>
             Hết giờ!<br><br>
             ${expiryTime}
-        `;
+        ;
     } else {
-        countdownElement.innerHTML = `
+        countdownElement.innerHTML = 
             ${box}<br><br>
             ${formatCountdown(remainingTime)}<br><br>
             ${expiryTime}
-        `;
+        ;
+        remainingTime -= 100; // Giảm thời gian còn lại mỗi 100ms (tương ứng 1/10 giây)
     }
-    remainingTime = Math.max(remainingTime - 100, 0);
-}, 100);
+}, 100); // Cập nhật mỗi 100ms 

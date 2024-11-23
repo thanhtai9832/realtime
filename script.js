@@ -1,14 +1,33 @@
-// Lấy tham số từ URL
+// Lấy tham số `data` đã mã hóa từ URL
 const params = new URLSearchParams(window.location.search);
-let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn
-let diamondCount = params.get('diamond_count') || 'N/A'; // Lấy diamond_count từ URL
-let peopleCount = params.get('people_count') || 'N/A'; // Lấy people_count từ URL
+const encodedData = params.get('data'); // Tham số chứa dữ liệu mã hóa
+
+// Giải mã Base64
+let decodedData;
+if (encodedData) {
+    try {
+        decodedData = atob(encodedData); // Giải mã Base64
+        console.log("Decoded Data:", decodedData); // Kiểm tra kết quả giải mã
+    } catch (error) {
+        document.getElementById('countdown').textContent = 'Dữ liệu mã hóa không hợp lệ!';
+        throw new Error('Failed to decode Base64: ' + error.message);
+    }
+} else {
+    document.getElementById('countdown').textContent = 'Không có dữ liệu mã hóa trong URL!';
+    throw new Error('Missing encoded data in the URL');
+}
+
+// Phân tích dữ liệu đã giải mã
+const dataParams = new URLSearchParams(decodedData);
+let unpackAt = parseInt(dataParams.get('unpack_at'), 10); // Lấy thời gian hết hạn
+let diamondCount = dataParams.get('diamond_count') || 'N/A'; // Lấy diamond_count
+let peopleCount = dataParams.get('people_count') || 'N/A'; // Lấy people_count
 let box = `${diamondCount}/${peopleCount}`; // Ghép diamond_count và people_count
 
-// Kiểm tra nếu không có `unpack_at` trong URL
+// Kiểm tra nếu không có `unpack_at` trong dữ liệu giải mã
 if (!unpackAt) {
     document.getElementById('countdown').textContent = 'Không có thông tin thời gian hết hạn!';
-    throw new Error('unpack_at is missing in the URL');
+    throw new Error('unpack_at is missing in the decoded data');
 }
 
 // Lấy thời gian hiện tại

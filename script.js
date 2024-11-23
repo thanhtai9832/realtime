@@ -1,15 +1,14 @@
-// Lấy tham số `time` từ URL
+// Lấy tham số `time` và `startTime` từ URL
 const params = new URLSearchParams(window.location.search);
-let time = parseInt(params.get('time'), 10) || 0; // Chuyển `time` thành số nguyên
+let time = parseInt(params.get('time'), 10) || 0; // Thời gian ban đầu (giây)
+let startTime = parseInt(params.get('startTime'), 10) || Date.now(); // Timestamp bắt đầu
 
 // Đổi giây thành mili giây
 let initialMilliseconds = time * 1000;
 
-// Lấy thời điểm hiện tại
-const currentTime = Date.now();
-
-// Tính toán chênh lệch thời gian
-let milliseconds = Math.max(initialMilliseconds - (Date.now() - currentTime), 0); // Đảm bảo không âm
+// Tính thời gian đã trôi qua
+let elapsedMilliseconds = Date.now() - startTime;
+let milliseconds = Math.max(initialMilliseconds - elapsedMilliseconds, 0); // Thời gian còn lại (đảm bảo không âm)
 
 // Hàm định dạng thời gian
 function formatTime(milliseconds) {
@@ -28,6 +27,6 @@ const timer = setInterval(() => {
         countdownElement.textContent = 'Hết giờ!';
     } else {
         countdownElement.textContent = `Đếm ngược: ${formatTime(milliseconds)}`;
-        milliseconds -= 100;
+        milliseconds -= 100; // Giảm 100ms mỗi lần
     }
 }, 100);

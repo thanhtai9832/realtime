@@ -3,7 +3,6 @@ const params = new URLSearchParams(window.location.search);
 let unpackAt = parseInt(params.get('unpack_at'), 10); // Lấy thời gian hết hạn
 let diamondCount = params.get('diamond_count') || 'N/A'; // Lấy diamond_count từ URL
 let peopleCount = params.get('people_count') || 'N/A'; // Lấy people_count từ URL
-let tiktokId = params.get('id') || 'N/A'; // Lấy tiktok_id
 let box = `${diamondCount}/${peopleCount}`; // Ghép diamond_count và people_count
 
 // Kiểm tra nếu không có `unpack_at` trong URL
@@ -39,14 +38,12 @@ const timer = setInterval(() => {
     if (remainingTime <= 0) {
         clearInterval(timer);
         countdownElement.innerHTML = `
-            ${tiktokId}<br><br>
             ${box}<br><br>
             ${formatCountdown(0)}<br><br>
             ${expiryTime}
         `;
     } else {
         countdownElement.innerHTML = `
-            ${tiktokId}<br><br>
             ${box}<br><br>
             ${formatCountdown(remainingTime)}<br><br>
             ${expiryTime}

@@ -5,24 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting to TikTok...</title>
     <script>
+        function base62Decode(str) {
+            const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            let num = 0;
+            for (let char of str) {
+                num = num * 62 + chars.indexOf(char);
+            }
+            return num.toString();
+        }
+
         function decodeAndRedirect() {
             const params = new URLSearchParams(window.location.search);
-            const encodedId = params.get("id"); // Lấy ID mã hóa từ URL
+            const encodedId = params.get("id");
 
             if (encodedId) {
                 try {
-                    const decodedId = atob(encodedId); // Giải mã Base64
+                    const decodedId = base62Decode(encodedId);
+                    console.log("Decoded Room ID:", decodedId); // Debug
                     const tiktokAppLink = "tiktok://share/live/" + decodedId;
                     const fallbackUrl = "https://www.tiktok.com/share/live/" + decodedId;
 
-                    window.location.href = tiktokAppLink; // Mở TikTok App
+                    window.location.href = tiktokAppLink;
 
-                    // Nếu sau 3 giây không mở được app, fallback sang web
                     setTimeout(() => {
                         window.location.href = fallbackUrl;
                     }, 3000);
                 } catch (error) {
-                    document.body.innerHTML = "<h2>❌ Lỗi: Link không hợp lệ.</h2>";
+                    document.body.innerHTML = `<h2>❌ Lỗi giải mã: ${error.message}</h2>`;
+                    console.error("Decode error:", error);
                 }
             } else {
                 document.body.innerHTML = "<h2>❌ Thiếu ID trong URL.</h2>";

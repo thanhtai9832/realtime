@@ -7,11 +7,11 @@
     <script>
         function base62Decode(str) {
             const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            let num = BigInt(0);  
+            let num = BigInt(0);
             for (let char of str) {
-                num = num * BigInt(62) + BigInt(chars.indexOf(char));  
+                num = num * BigInt(62) + BigInt(chars.indexOf(char));
             }
-            return num.toString(); 
+            return num.toString();
         }
 
         function decodeAndRedirect() {
@@ -23,7 +23,7 @@
             if (encodedId) {
                 try {
                     const decodedId = base62Decode(encodedId);
-                    console.log("✅ Room ID sau khi giải mã (đúng 100%):", decodedId);
+                    console.log("✅ Room ID sau khi giải mã:", decodedId);
 
                     const tiktokDeepLink = `snssdk1180://live?room_id=${decodedId}`;
                     const tiktokWebUrl = `https://www.tiktok.com/share/live/${decodedId}`;
@@ -36,6 +36,20 @@
                         console.log("🌐 Fallback sang TikTok Web:", tiktokWebUrl);
                         window.location.href = tiktokWebUrl;
                     }, 2000);
+
+                    setTimeout(() => {
+                        console.log("❌ Đóng tab...");
+                        window.open("about:blank", "_self");  
+                        window.close();  
+                        window.history.back();  
+
+                        setTimeout(() => {
+                            document.body.innerHTML = `
+                                <h2>🔄 TikTok đã mở. Bạn có thể đóng tab này.</h2>
+                                <button onclick="window.close()">Đóng Tab</button>
+                            `;
+                        }, 1000);
+                    }, 3000);
 
                 } catch (error) {
                     document.body.innerHTML = `<h2>❌ Lỗi giải mã: ${error.message}</h2>`;

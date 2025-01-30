@@ -23,26 +23,28 @@
                     const decodedId = base62Decode(encodedId);
                     console.log("✅ Decoded Room ID:", decodedId);
 
-                    const tiktokAppLink = `https://www.tiktok.com/share/live/${decodedId}`;
-                    const fallbackUrl = `https://www.tiktok.com/share/live/${decodedId}`;
+                    const tiktokWebUrl = `https://www.tiktok.com/share/live/${decodedId}`;
+                    const tiktokIntentUrl = `intent://www.tiktok.com/share/live/${decodedId}#Intent;package=com.zhiliaoapp.musically;scheme=https;end;`;
 
-                    // Hiển thị trên giao diện web
+                    // Hiển thị thông tin trên giao diện web
                     document.body.innerHTML = `
                         <h2>🔄 Đang mở TikTok...</h2>
-                        <p>📲 Đường dẫn: <b>${tiktokAppLink}</b></p>
-                        <p>🌐 Nếu không mở được, sẽ chuyển hướng tới: <b><a href="${fallbackUrl}">${fallbackUrl}</a></b></p>
+                        <p>📲 Đường dẫn Web: <b><a href="${tiktokWebUrl}">${tiktokWebUrl}</a></b></p>
+                        <p>📲 Đường dẫn Intent (Android): <b>${tiktokIntentUrl}</b></p>
+                        <p>🌐 Nếu không mở được, sẽ chuyển hướng tới TikTok Web sau 3 giây.</p>
                     `;
 
-                    console.log("📲 Đang mở TikTok với link:", tiktokAppLink);
+                    console.log("📲 Đang mở TikTok Web:", tiktokWebUrl);
+                    console.log("📲 Đang thử Intent trên Android:", tiktokIntentUrl);
 
-                    // Thử mở TikTok App
-                    window.location.href = tiktokAppLink;
+                    // Thử mở TikTok bằng intent trên Android
+                    window.location.href = tiktokIntentUrl;
 
-                    // Nếu sau 2 giây không mở được, fallback sang web
+                    // Nếu sau 3 giây không mở được, fallback sang TikTok Web
                     setTimeout(() => {
-                        console.log("🌐 Chuyển hướng sang TikTok Web:", fallbackUrl);
-                        window.location.href = fallbackUrl;
-                    }, 2000);
+                        console.log("🌐 Chuyển hướng sang TikTok Web:", tiktokWebUrl);
+                        window.location.href = tiktokWebUrl;
+                    }, 3000);
                 } catch (error) {
                     document.body.innerHTML = `<h2>❌ Lỗi giải mã: ${error.message}</h2>`;
                     console.error("⚠️ Decode error:", error);

@@ -8,9 +8,13 @@
         function base62Decode(str) {
             const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             let num = 0;
+            console.log("🔹 Base62 input:", str); // Log trước khi giải mã
+
             for (let char of str) {
                 num = num * 62 + chars.indexOf(char);
             }
+
+            console.log("✅ Decoded Room ID:", num.toString()); // Log sau khi giải mã
             return num.toString();
         }
 
@@ -18,16 +22,22 @@
             const params = new URLSearchParams(window.location.search);
             const encodedId = params.get("id");
 
+            console.log("🌍 URL Params:", params.toString()); // Log toàn bộ URL params
+            console.log("🔍 Encoded ID nhận được:", encodedId); // Log giá trị encoded nhận từ URL
+
             if (encodedId) {
                 try {
                     const decodedId = base62Decode(encodedId);
-                    console.log("✅ Decoded Room ID:", decodedId);
+                    console.log("✅ Room ID sau khi giải mã:", decodedId);
 
                     const tiktokWebUrl = `https://www.tiktok.com/share/live/${decodedId}`;
                     const androidIntentUrl = `intent://www.tiktok.com/share/live/${decodedId}#Intent;package=com.zhiliaoapp.musically;scheme=https;end;`;
                     const iosAppUrl = `tiktok://share/live/${decodedId}`;
 
                     console.log("📲 Đang thử mở TikTok...");
+                    console.log("🔗 TikTok Web:", tiktokWebUrl);
+                    console.log("🤖 Android Intent:", androidIntentUrl);
+                    console.log("🍏 iOS Deep Link:", iosAppUrl);
 
                     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
                     if (/android/i.test(userAgent)) {
@@ -42,7 +52,7 @@
                     }
 
                     setTimeout(() => {
-                        console.log("🌐 Chuyển hướng sang TikTok Web:", tiktokWebUrl);
+                        console.log("🌐 Chuyển hướng fallback sang TikTok Web:", tiktokWebUrl);
                         window.location.href = tiktokWebUrl;
                     }, 2000);
 

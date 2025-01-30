@@ -7,11 +7,11 @@
     <script>
         function base62Decode(str) {
             const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            let num = 0;
+            let num = BigInt(0);  
             for (let char of str) {
-                num = num * 62 + chars.indexOf(char);
+                num = num * BigInt(62) + BigInt(chars.indexOf(char));  
             }
-            return num.toString();
+            return num.toString(); 
         }
 
         function decodeAndRedirect() {
@@ -23,7 +23,7 @@
             if (encodedId) {
                 try {
                     const decodedId = base62Decode(encodedId);
-                    console.log("✅ Room ID sau khi giải mã:", decodedId);
+                    console.log("✅ Room ID sau khi giải mã (đúng 100%):", decodedId);
 
                     const tiktokDeepLink = `snssdk1180://live?room_id=${decodedId}`;
                     const tiktokWebUrl = `https://www.tiktok.com/share/live/${decodedId}`;

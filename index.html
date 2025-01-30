@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to TikTok...</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Redirecting to TikTok Live...</title>
     <script>
         function base62Decode(str) {
             const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             let num = 0;
-            console.log("🔹 Base62 input:", str); // Log trước khi giải mã
-
             for (let char of str) {
                 num = num * 62 + chars.indexOf(char);
             }
-
-            console.log("✅ Decoded Room ID:", num.toString()); // Log sau khi giải mã
             return num.toString();
         }
 
@@ -22,8 +18,7 @@
             const params = new URLSearchParams(window.location.search);
             const encodedId = params.get("id");
 
-            console.log("🌍 URL Params:", params.toString()); // Log toàn bộ URL params
-            console.log("🔍 Encoded ID nhận được:", encodedId); // Log giá trị encoded nhận từ URL
+            console.log("🔍 Encoded ID nhận được:", encodedId);
 
             if (encodedId) {
                 try {
@@ -35,26 +30,28 @@
                     const iosAppUrl = `tiktok://share/live/${decodedId}`;
 
                     console.log("📲 Đang thử mở TikTok...");
-                    console.log("🔗 TikTok Web:", tiktokWebUrl);
-                    console.log("🤖 Android Intent:", androidIntentUrl);
-                    console.log("🍏 iOS Deep Link:", iosAppUrl);
 
                     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+                    // Nếu là Android → Dùng intent:// để ép mở app
                     if (/android/i.test(userAgent)) {
-                        console.log("📱 Android detected: mở bằng intent");
-                        window.location.href = androidIntentUrl;
-                    } else if (/iPhone|iPad|iPod/i.test(userAgent)) {
-                        console.log("🍏 iOS detected: mở bằng app link");
-                        window.location.href = iosAppUrl;
-                    } else {
-                        console.log("🌐 Không phải Android/iOS, mở TikTok Web");
-                        window.location.href = tiktokWebUrl;
+                        console.log("📱 Android detected: mở bằng intent://");
+                        window.location.replace(androidIntentUrl);
+                        return;
                     }
 
-                    setTimeout(() => {
-                        console.log("🌐 Chuyển hướng fallback sang TikTok Web:", tiktokWebUrl);
-                        window.location.href = tiktokWebUrl;
-                    }, 2000);
+                    // Nếu là iOS → Thử mở bằng deep link tiktok://
+                    if (/iPhone|iPad|iPod/i.test(userAgent)) {
+                        console.log("🍏 iOS detected: mở bằng tiktok://");
+                        setTimeout(() => {
+                            window.location.replace(iosAppUrl);
+                        }, 100);  // Delay ngắn giúp trình duyệt không chặn
+                        return;
+                    }
+
+                    // Nếu không phải Android/iOS → Mở TikTok Web
+                    console.log("🌐 Không phải Android/iOS, mở TikTok Web");
+                    window.location.href = tiktokWebUrl;
 
                 } catch (error) {
                     document.body.innerHTML = `<h2>❌ Lỗi giải mã: ${error.message}</h2>`;
@@ -67,6 +64,6 @@
     </script>
 </head>
 <body onload="decodeAndRedirect()">
-    <h2>🔄 Đang mở TikTok...</h2>
+    <h2>🔄 Đang mở TikTok Live...</h2>
 </body>
 </html>

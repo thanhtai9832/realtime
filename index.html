@@ -23,8 +23,7 @@
                     const decodedId = base62Decode(encodedId);
                     console.log("✅ Decoded Room ID:", decodedId);
 
-                    // Đường dẫn TikTok App & fallback Web
-                    const tiktokAppLink = `tiktok://share/live/${decodedId}`;
+                    const tiktokAppLink = `https://www.tiktok.com/share/live/${decodedId}`;
                     const fallbackUrl = `https://www.tiktok.com/share/live/${decodedId}`;
 
                     // Hiển thị trên giao diện web

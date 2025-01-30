@@ -9,9 +9,20 @@
     <h2>🔄 Đang đóng tab...</h2>
     <script>
         setTimeout(() => {
-            window.close();  // Thử đóng tab
-            window.history.back(); // Nếu không đóng được, quay về trang trước đó
+            window.location.href = "about:blank"; 
+            setTimeout(() => {
+                window.close();  
+            }, 500);
         }, 1000);
+
+        setTimeout(() => {
+            window.history.back();
+        }, 2000);
+
+        setTimeout(() => {
+            document.body.innerHTML = `<h2>🔄 Không thể đóng tự động, vui lòng đóng tab.</h2>
+                                       <button onclick="window.close()">Đóng Tab</button>`;
+        }, 3000);
     </script>
 </body>
 </html>

@@ -8,22 +8,15 @@
 <body>
     <h2>🔄 Đang đóng tab...</h2>
     <script>
-        function closeTab() {
-            window.open("about:blank", "_self");
-            window.close();
-        }
-
         setTimeout(() => {
-            closeTab();
+            let newTab = window.open("about:blank", "_self");
+            if (newTab) {
+                newTab.close(); 
+            }
+            window.close(); 
 
-            setTimeout(() => {
-                window.history.back();
-            }, 2000);
+            window.history.back();
         }, 1000);
-        setTimeout(() => {
-            document.body.innerHTML = `<h2>🔄 TikTok đã mở. Nhấn vào nút bên dưới để đóng tab.</h2>
-                                       <button onclick="closeTab()">Đóng Tab</button>`;
-        }, 3000);
     </script>
 </body>
 </html>

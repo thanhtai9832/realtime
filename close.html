@@ -8,20 +8,21 @@
 <body>
     <h2>🔄 Đang đóng tab...</h2>
     <script>
+        function closeTab() {
+            window.open("about:blank", "_self");
+            window.close();
+        }
+
         setTimeout(() => {
-            window.location.href = "about:blank"; 
+            closeTab();
+
             setTimeout(() => {
-                window.close();  
-            }, 500);
+                window.history.back();
+            }, 2000);
         }, 1000);
-
         setTimeout(() => {
-            window.history.back();
-        }, 2000);
-
-        setTimeout(() => {
-            document.body.innerHTML = `<h2>🔄 Không thể đóng tự động, vui lòng đóng tab.</h2>
-                                       <button onclick="window.close()">Đóng Tab</button>`;
+            document.body.innerHTML = `<h2>🔄 TikTok đã mở. Nhấn vào nút bên dưới để đóng tab.</h2>
+                                       <button onclick="closeTab()">Đóng Tab</button>`;
         }, 3000);
     </script>
 </body>

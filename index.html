@@ -21,18 +21,32 @@
             if (encodedId) {
                 try {
                     const decodedId = base62Decode(encodedId);
-                    console.log("Decoded Room ID:", decodedId); // Debug
-                    const tiktokAppLink = "tiktok://share/live/" + decodedId;
-                    const fallbackUrl = "https://www.tiktok.com/share/live/" + decodedId;
+                    console.log("✅ Decoded Room ID:", decodedId);
 
+                    // Đường dẫn TikTok App & fallback Web
+                    const tiktokAppLink = `tiktok://share/live/${decodedId}`;
+                    const fallbackUrl = `https://www.tiktok.com/share/live/${decodedId}`;
+
+                    // Hiển thị trên giao diện web
+                    document.body.innerHTML = `
+                        <h2>🔄 Đang mở TikTok...</h2>
+                        <p>📲 Đường dẫn: <b>${tiktokAppLink}</b></p>
+                        <p>🌐 Nếu không mở được, sẽ chuyển hướng tới: <b><a href="${fallbackUrl}">${fallbackUrl}</a></b></p>
+                    `;
+
+                    console.log("📲 Đang mở TikTok với link:", tiktokAppLink);
+
+                    // Thử mở TikTok App
                     window.location.href = tiktokAppLink;
 
+                    // Nếu sau 2 giây không mở được, fallback sang web
                     setTimeout(() => {
+                        console.log("🌐 Chuyển hướng sang TikTok Web:", fallbackUrl);
                         window.location.href = fallbackUrl;
-                    }, 3000);
+                    }, 2000);
                 } catch (error) {
                     document.body.innerHTML = `<h2>❌ Lỗi giải mã: ${error.message}</h2>`;
-                    console.error("Decode error:", error);
+                    console.error("⚠️ Decode error:", error);
                 }
             } else {
                 document.body.innerHTML = "<h2>❌ Thiếu ID trong URL.</h2>";

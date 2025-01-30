@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Redirecting to TikTok...</title>
+    <script>
+        function decodeAndRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            const encodedId = params.get("id"); // Lấy ID mã hóa từ URL
+
+            if (encodedId) {
+                try {
+                    const decodedId = atob(encodedId); // Giải mã Base64
+                    const tiktokAppLink = "tiktok://share/live/" + decodedId;
+                    const fallbackUrl = "https://www.tiktok.com/share/live/" + decodedId;
+
+                    window.location.href = tiktokAppLink; // Mở TikTok App
+
+                    // Nếu sau 3 giây không mở được app, fallback sang web
+                    setTimeout(() => {
+                        window.location.href = fallbackUrl;
+                    }, 3000);
+                } catch (error) {
+                    document.body.innerHTML = "<h2>❌ Lỗi: Link không hợp lệ.</h2>";
+                }
+            } else {
+                document.body.innerHTML = "<h2>❌ Thiếu ID trong URL.</h2>";
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="container">
-        <h1 id="countdown">Đếm ngược: 00:00</h1>
-    </div>
-    <script src="script.js"></script>
+<body onload="decodeAndRedirect()">
+    <h2>Đang mở TikTok...</h2>
 </body>
 </html>
